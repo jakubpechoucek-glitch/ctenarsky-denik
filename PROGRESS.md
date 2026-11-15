@@ -4,8 +4,8 @@
   (`docs/zadani.md`). Rozhodnuto: přidávání podle ISBN s dohledáním
   v Google Books / Open Library, stavy rozečtená/dočtená/nedočtená,
   statistiky dle zadání, Databáze knih jen na jednorázový import.
-- Čeká se: založení repozitáře `ctenarsky-denik` Jakubem (Muse GitHub App
-  repozitář sama založit nemůže) a jeho přidání do aplikace; pak se sem
-  nahraje zadání a začne stavba.
-- Další krok po repozitáři: společné přihlášení na Databázi knih
-  (Jakub přes Google) a ověření, co z profilu půjde pro import přečíst.
+- Repozitář `ctenarsky-denik` založen Jakubem 15. 11. 2026 a přidán
+  do Muse GitHub App; zadání, README a CLAUDE.md nahrány.
+- Další krok: společné přihlášení na Databázi knih (Jakub přes Google)
+  a ověření, co z profilu půjde pro import přečíst. Pak rozhodnutí
+  o Supabase projektu a stavba v1.
