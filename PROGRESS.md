@@ -17,6 +17,10 @@
   přidání knihy podle ISBN (Google Books / Open Library, i skenování
   čárového kódu), ruční zadání, úpravy a mazání, režim `?demo`.
   Výpočty otestovány (tests/test-stats.js, vše prošlo).
-- Čeká se na Jakuba: v Supabase SQL editoru spustit `docs/supabase.sql`
-  a pak importní SQL (lokální soubor, předán zvlášť); zapnout GitHub
-  Pages pro repozitář. Pak první ostré otevření a kontrola dat.
+- 15. 11. 2026 – Tabulka `cteni` vytvořena v Supabase (společné
+  přihlášení přes prohlížeč, Jakub se do Supabase hlásí přes GitHub)
+  a import nahrán: ověřeno 31 záznamů pod Jakubovým účtem.
+- 15. 11. 2026 – GitHub Pages zapnuto, aplikace běží na
+  https://jakubpechoucek-glitch.github.io/ctenarsky-denik/
+  (nepřihlášeného přesměruje na Rozcestník a po přihlášení vrátí zpět).
+- Zbývá: Jakubovo první ostré otevření a kontrola, že data sedí.
