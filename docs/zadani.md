@@ -56,6 +56,7 @@ Tabulka `cteni`:
 | obalka_url | text, null | odkaz na obálku ze zdroje |
 | datum_zahajeni | date | den přidání, lze upravit |
 | datum_dokonceni | date, null | |
+| jazyk | text | `cs` (výchozí) / `en` – anglický originál, v seznamu značí vlajka UK |
 | stav | text | `rozečtena` / `doctena` / `nedoctena` |
 | hodnoceni | int, null | moje hodnocení (z importu i ručně) |
 | odhad | bool | data jsou odhadovaná (ruční zpětné doplnění, měsíční intervaly z importu) |
