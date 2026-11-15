@@ -194,7 +194,7 @@
 
   // Volitelný API klíč ke Google Books (zdarma, v Google Cloud omezit na adresu
   // aplikace). Bez klíče se používá sdílená kvóta, která bývá vyčerpaná (HTTP 429).
-  const GOOGLE_BOOKS_KEY = "";
+  const GOOGLE_BOOKS_KEY = "AIzaSyAiVJj_N88bDYYxFgYR_yvs1oAcjL6Aw1o";
 
   // Vrací { nalez, chyby }: nalez je objekt nebo null, chyby popisují, co selhalo.
   async function dohledatIsbn(isbn) {
