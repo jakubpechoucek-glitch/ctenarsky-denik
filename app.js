@@ -203,6 +203,7 @@
         pocet_stran: info.pageCount || null,
         rok_vydani: info.publishedDate ? Number(String(info.publishedDate).slice(0, 4)) || null : null,
         obalka_url: info.imageLinks?.thumbnail?.replace("http://", "https://") || "",
+        jazyk: String(info.language || "").toLowerCase().startsWith("en") ? "en" : "cs",
       };
     } catch (e) { /* zkusí se druhý zdroj */ }
     // Open Library
