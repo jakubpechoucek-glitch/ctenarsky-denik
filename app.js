@@ -76,6 +76,18 @@
       <div class="akce">${akce}</div></div>`;
   }
 
+  // Trend metriky oproti předchozímu roku: šipka, rozdíl a procenta.
+  // obracene = true znamená, že pokles je zlepšení (dní na knihu).
+  function trendHtml(p, formatuj, obracene, predRok) {
+    if (!p) return `<em class="trend">bez srovnání s rokem ${predRok}</em>`;
+    if (Math.abs(p.delta) < 1e-9) return `<em class="trend">→ beze změny oproti ${predRok}</em>`;
+    const nahoru = p.delta > 0;
+    const dobre = obracene ? !nahoru : nahoru;
+    const pct = p.pct === null ? "" : ` (${p.delta > 0 ? "+" : "−"}${Math.abs(p.pct).toFixed(0)} %)`;
+    const delta = formatuj(p.delta).replace("-", "−");
+    return `<em class="trend ${dobre ? "dobre" : "spatne"}">${nahoru ? "▲" : "▼"} ${delta}${pct} oproti ${predRok}</em>`;
+  }
+
   function renderPrehled() {
     const { roky, mesice } = S.prehledVCasu(knihy);
     const rokyList = Object.keys(roky).sort().reverse();
@@ -86,13 +98,17 @@
     // Základní údaje i extrémy se počítají jen z knih dočtených ve vybraném roce
     const proRok = zvoleny ? knihy.filter((k) => k.datum_dokonceni && k.datum_dokonceni.startsWith(zvoleny)) : [];
     const s = S.souhrn(proRok);
+    // Trend oproti předchozímu roku
+    const predRok = zvoleny ? String(Number(zvoleny) - 1) : "";
+    const ps = S.souhrn(knihy.filter((k) => k.datum_dokonceni && k.datum_dokonceni.startsWith(predRok)));
+    const por = ps.knih ? S.porovnani(s, ps) : { knih: null, stran: null, prumernaRychlost: null, prumernaDobaCteni: null };
     const dlaz = [
-      [s.knih, "dočtených knih"],
-      [s.stran.toLocaleString("cs-CZ"), "stran celkem"],
-      [s.prumernaRychlost === null ? "–" : s.prumernaRychlost.toFixed(1).replace(".", ","), "stran/den průměrně"],
-      [s.prumernaDobaCteni === null ? "–" : s.prumernaDobaCteni.toFixed(1).replace(".", ","), "dní na knihu průměrně"],
+      [s.knih, "dočtených knih", trendHtml(por.knih, (d) => (d > 0 ? "+" : "") + d, false, predRok)],
+      [s.stran.toLocaleString("cs-CZ"), "stran celkem", trendHtml(por.stran, (d) => (d > 0 ? "+" : "") + d.toLocaleString("cs-CZ"), false, predRok)],
+      [s.prumernaRychlost === null ? "–" : s.prumernaRychlost.toFixed(1).replace(".", ","), "stran/den průměrně", trendHtml(por.prumernaRychlost, (d) => (d > 0 ? "+" : "") + d.toFixed(1).replace(".", ","), false, predRok)],
+      [s.prumernaDobaCteni === null ? "–" : s.prumernaDobaCteni.toFixed(1).replace(".", ","), "dní na knihu průměrně", trendHtml(por.prumernaDobaCteni, (d) => (d > 0 ? "+" : "") + d.toFixed(1).replace(".", ","), true, predRok)],
     ];
-    $("souhrn-dlazdice").innerHTML = dlaz.map(([v, t]) => `<div class="cislo"><b>${v}</b><span>${t}</span></div>`).join("");
+    $("souhrn-dlazdice").innerHTML = dlaz.map(([v, t, tr]) => `<div class="cislo"><b>${v}</b>${tr}<span>${t}</span></div>`).join("");
 
     const e = S.extremy(proRok);
     $("extremy").innerHTML = e.nejrychlejsi

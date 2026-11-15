@@ -28,3 +28,7 @@
   výběr roku přesunut nahoru do Přehledu; do hlavičky přidáno tlačítko
   „← Rozcestník". Souhrny za jednotlivé roky zůstávají dole jako řádka
   odznaků. Čeká se na Jakubovu ostrou kontrolu dat.
+- 15. 11. 2026 – U hlavních metrik v Přehledu doplněn trend oproti
+  předchozímu roku (šipka, rozdíl a procenta; u dní na knihu je zlepšení
+  pokles). Výpočet `porovnani()` je ve stats.js, testy rozšířeny
+  (21 kontrol).

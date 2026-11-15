@@ -16,6 +16,13 @@ main { max-width: 860px; margin: 0 auto; padding: 0 12px 24px; display: grid; ga
 .dlazdice .cislo { background: var(--akcent-svetla); border-radius: 10px; padding: 10px 12px; }
 .dlazdice .cislo b { display: block; font-size: 1.35rem; }
 .dlazdice .cislo span { color: var(--seda); font-size: .85rem; }
+.dlazdice .cislo .trend { display: block; font-style: normal; font-size: .78rem; color: var(--seda); }
+.dlazdice .cislo .trend.dobre { color: #1f7a5c; }
+.dlazdice .cislo .trend.spatne { color: #b3261e; }
+@media (prefers-color-scheme: dark) {
+  .dlazdice .cislo .trend.dobre { color: #4cc79a; }
+  .dlazdice .cislo .trend.spatne { color: #ff8a80; }
+}
 .extremy { margin-top: 12px; color: var(--seda); font-size: .95rem; }
 .extremy b { color: var(--ink); }
 .graf { display: grid; gap: 4px; margin-top: 6px; }

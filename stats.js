@@ -73,7 +73,22 @@
     return d >= 1 ? d : null;
   }
 
-  const api = { dnyCteni, rychlost, souhrn, prehledVCasu, extremy, ctuDni };
+  // Porovnání dvou souhrnů (aktuální vs. předchozí období):
+  // pro každou metriku rozdíl a procentuální změnu; chybějící hodnoty → null
+  function porovnani(akt, pred) {
+    function polozka(a, p) {
+      if (a === null || a === undefined || p === null || p === undefined) return null;
+      return { delta: a - p, pct: p !== 0 ? ((a - p) / Math.abs(p)) * 100 : null };
+    }
+    return {
+      knih: polozka(akt.knih, pred.knih),
+      stran: polozka(akt.stran, pred.stran),
+      prumernaRychlost: polozka(akt.prumernaRychlost, pred.prumernaRychlost),
+      prumernaDobaCteni: polozka(akt.prumernaDobaCteni, pred.prumernaDobaCteni),
+    };
+  }
+
+  const api = { dnyCteni, rychlost, souhrn, prehledVCasu, extremy, ctuDni, porovnani };
   global.Statistiky = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof window !== "undefined" ? window : globalThis);

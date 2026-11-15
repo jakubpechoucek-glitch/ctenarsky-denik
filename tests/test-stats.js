@@ -35,5 +35,22 @@ over("nejrychlejší je B", e.nejrychlejsi.nazev, "B");
 over("nejpomalejší je A", e.nejpomalejsi.nazev, "A");
 over("čtu D dní", S.ctuDni(knihy[3], "2026-03-11"), 11);
 
+// Porovnání s předchozím obdobím
+const por = S.porovnani(
+  { knih: 10, stran: 3000, prumernaRychlost: 30, prumernaDobaCteni: 12 },
+  { knih: 8, stran: 2000, prumernaRychlost: 25, prumernaDobaCteni: 15 }
+);
+over("porovnání: delta knih", por.knih.delta, 2);
+over("porovnání: procenta knih", Math.round(por.knih.pct), 25);
+over("porovnání: delta stran", por.stran.delta, 1000);
+over("porovnání: procenta rychlosti", Math.round(por.prumernaRychlost.pct), 20);
+over("porovnání: delta doby čtení", por.prumernaDobaCteni.delta, -3);
+const porPrazdne = S.porovnani(
+  { knih: 10, stran: 3000, prumernaRychlost: 30, prumernaDobaCteni: 12 },
+  { knih: 0, stran: 0, prumernaRychlost: null, prumernaDobaCteni: null }
+);
+over("porovnání: chybějící průměr → null", porPrazdne.prumernaRychlost, null);
+over("porovnání: dělení nulou → procenta null", porPrazdne.knih.pct, null);
+
 console.log(chyb ? `\n${chyb} testů selhalo` : "\nVše prošlo");
 process.exit(chyb ? 1 : 0);
