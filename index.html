@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="cs" class="auth-ceka">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Čtenářský deník</title>
+<link rel="stylesheet" href="styles.css?v=20261115">
+<style>.auth-ceka body{visibility:hidden}</style>
+</head>
+<body>
+<header class="hlavicka">
+  <h1>📚 Čtenářský deník</h1>
+  <div class="uzivatel">
+    <span id="jmeno-uzivatele"></span>
+    <button id="odhlasit" class="btn btn-maly btn-svetly" hidden>Odhlásit</button>
+  </div>
+</header>
+
+<main>
+  <section id="prehled" class="karta">
+    <h2>Přehled</h2>
+    <div class="dlazdice" id="souhrn-dlazdice"></div>
+    <div id="extremy" class="extremy"></div>
+    <h3>Strany podle měsíců</h3>
+    <div class="radek-filtru">
+      <label>Rok: <select id="graf-rok"></select></label>
+    </div>
+    <div id="graf" class="graf"></div>
+    <div id="roky-souhrn" class="roky"></div>
+  </section>
+
+  <section id="prave-ctu" class="karta">
+    <h2>Právě čtu</h2>
+    <div id="rozečtene-seznam"></div>
+  </section>
+
+  <section id="pridat" class="karta">
+    <h2 id="form-nadpis">Přidat knihu</h2>
+    <div class="radek-filtru">
+      <input id="isbn" inputmode="numeric" placeholder="ISBN (bez pomlček to nevadí)" aria-label="ISBN">
+      <button id="dohledat" class="btn">Dohledat</button>
+      <button id="skenovat" class="btn btn-svetly">📷 Skenovat kód</button>
+    </div>
+    <p id="dohledani-stav" class="stav-text"></p>
+    <video id="skener" playsinline hidden></video>
+    <form id="form-kniha">
+      <input type="hidden" id="f-id">
+      <label>Název <input id="f-nazev" required></label>
+      <label>Autor <input id="f-autor"></label>
+      <div class="dva">
+        <label>Počet stran <input id="f-strany" type="number" min="1"></label>
+        <label>Rok vydání <input id="f-rok" type="number" min="0"></label>
+      </div>
+      <label>ISBN <input id="f-isbn"></label>
+      <label>Obálka (URL) <input id="f-obalka"></label>
+      <label>Stav
+        <select id="f-stav">
+          <option value="rozečtena">Rozečtená</option>
+          <option value="doctena">Dočtená</option>
+          <option value="nedoctena">Nedočtená</option>
+        </select>
+      </label>
+      <div class="dva">
+        <label>Zahájení čtení <input id="f-zahajeni" type="date"></label>
+        <label>Dokončení <input id="f-dokonceni" type="date"></label>
+      </div>
+      <label>Hodnocení (1–5)
+        <select id="f-hodnoceni">
+          <option value="">–</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+        </select>
+      </label>
+      <label class="checkbox"><input id="f-odhad" type="checkbox"> Data jsou odhadovaná</label>
+      <label>Poznámka <input id="f-poznamka"></label>
+      <div class="radek-filtru">
+        <button type="submit" class="btn">Uložit knihu</button>
+        <button type="button" id="form-zrusit" class="btn btn-svetly" hidden>Zrušit úpravu</button>
+      </div>
+      <p id="form-stav" class="stav-text"></p>
+    </form>
+  </section>
+
+  <section id="seznam" class="karta">
+    <h2>Moje knihy</h2>
+    <div class="radek-filtru">
+      <input id="hledat" type="search" placeholder="Hledat název nebo autora…" aria-label="Hledat">
+      <select id="filtr-stav" aria-label="Filtr stavu">
+        <option value="">Vše</option>
+        <option value="doctena">Dočtené</option>
+        <option value="rozečtena">Rozečtené</option>
+        <option value="nedoctena">Nedočtené</option>
+      </select>
+    </div>
+    <div id="knihy-seznam"></div>
+  </section>
+</main>
+
+<footer class="paticka">Čtenářský deník · data žijí v Supabase za rodinným přihlášením · <a href="https://jakubpechoucek-glitch.github.io/rozcestnik/">Rozcestník</a></footer>
+
+<script src="/rozcestnik/vendor/supabase-js-2.45.4.js"></script>
+<script src="/rozcestnik/auth.js"></script>
+<script src="stats.js?v=20261115"></script>
+<script src="app.js?v=20261115"></script>
+</body>
+</html>

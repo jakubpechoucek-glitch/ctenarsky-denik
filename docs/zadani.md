@@ -93,5 +93,6 @@ rychlost = počet stran / dny čtení.
 1. Jakub založí repozitář `ctenarsky-denik` a přidá ho do Muse GitHub App
    (aplikace sama repozitář založit nemůže – GitHub to integraci nedovolí).
 2. Společné přihlášení na Databázi knih a test, co z profilu půjde přečíst.
-3. Ve kterém Supabase projektu tabulka vznikne (vlastní vs. sdílený s ostatními
-   aplikacemi) – rozhodnout před stavbou.
+3. ~~Ve kterém Supabase projektu tabulka vznikne~~ – rozhodnuto 15. 11. 2026:
+   stávající rodinný projekt (unoefgbzymlwwehgzusf), společné přihlášení
+   přes `rozcestnik/auth.js`, tabulka `cteni`, SQL v `docs/supabase.sql`.

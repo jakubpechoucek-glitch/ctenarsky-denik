@@ -11,5 +11,12 @@
   s obdobími čtení, počty stran a ISBN. Importní JSON je lokálně
   v `import/` (v `.gitignore`, do gitu nepatří); kontrolní přehled
   předán Jakubovi.
-- Další krok: Jakubova kontrola importu, rozhodnutí o Supabase projektu
-  a stavba v1.
+- 15. 11. 2026 – Rozhodnuto: tabulka vznikne ve stávajícím rodinném
+  Supabase projektu. Aplikace v1 postavena (index.html, app.js, stats.js,
+  styles.css): přehled a grafy, právě čtu s tlačítkem „Dočteno dnes",
+  přidání knihy podle ISBN (Google Books / Open Library, i skenování
+  čárového kódu), ruční zadání, úpravy a mazání, režim `?demo`.
+  Výpočty otestovány (tests/test-stats.js, vše prošlo).
+- Čeká se na Jakuba: v Supabase SQL editoru spustit `docs/supabase.sql`
+  a pak importní SQL (lokální soubor, předán zvlášť); zapnout GitHub
+  Pages pro repozitář. Pak první ostré otevření a kontrola dat.

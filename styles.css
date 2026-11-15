@@ -1,0 +1,53 @@
+:root {
+  --papir: #f4f2ee; --karta: #fff; --ink: #1c1c1e; --seda: #66656b;
+  --cara: #e3ded4; --akcent: #8a5a2b; --akcent-svetla: #f0e4d3;
+  --zelena: #2e7d32; --cervena: #b3261e;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--papir); color: var(--ink); }
+.hlavicka { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; max-width: 860px; margin: 0 auto; }
+.hlavicka h1 { font: 600 1.45rem Georgia, "Times New Roman", serif; margin: 0; }
+.uzivatel { display: flex; align-items: center; gap: 8px; color: var(--seda); font-size: .9rem; }
+main { max-width: 860px; margin: 0 auto; padding: 0 12px 24px; display: grid; gap: 14px; }
+.karta { background: var(--karta); border: 1px solid var(--cara); border-radius: 14px; padding: 16px; }
+.karta h2 { font: 600 1.15rem Georgia, serif; margin: 0 0 12px; }
+.karta h3 { font-size: 1rem; margin: 18px 0 8px; }
+.dlazdice { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.dlazdice .cislo { background: var(--akcent-svetla); border-radius: 10px; padding: 10px 12px; }
+.dlazdice .cislo b { display: block; font-size: 1.35rem; }
+.dlazdice .cislo span { color: var(--seda); font-size: .85rem; }
+.extremy { margin-top: 12px; color: var(--seda); font-size: .95rem; }
+.extremy b { color: var(--ink); }
+.graf { display: grid; gap: 4px; margin-top: 6px; }
+.graf .radek { display: grid; grid-template-columns: 74px 1fr 86px; align-items: center; gap: 8px; font-size: .88rem; }
+.graf .sloupec { background: var(--akcent-svetla); border-radius: 4px; height: 16px; }
+.graf .sloupec i { display: block; height: 100%; background: var(--akcent); border-radius: 4px; }
+.graf .hodnota { color: var(--seda); text-align: right; }
+.roky { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+.roky .rok { border: 1px solid var(--cara); border-radius: 999px; padding: 4px 12px; font-size: .9rem; }
+.radek-filtru { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+input, select { font: inherit; padding: 8px 10px; border: 1px solid var(--cara); border-radius: 8px; background: #fff; color: var(--ink); }
+input[type="search"], #isbn { flex: 1 1 180px; }
+.btn { font: inherit; padding: 8px 16px; border-radius: 999px; border: 0; background: var(--ink); color: #fff; cursor: pointer; }
+.btn-svetly { background: var(--akcent-svetla); color: var(--ink); }
+.btn-maly { padding: 5px 12px; font-size: .88rem; }
+.btn-nebezpecny { background: var(--cervena); }
+.stav-text { color: var(--seda); min-height: 1.2em; margin: 6px 0; }
+form { display: grid; gap: 10px; }
+form label { display: grid; gap: 4px; font-size: .92rem; color: var(--seda); }
+form label input, form label select { color: var(--ink); }
+form .dva { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+form .checkbox { display: flex; gap: 8px; align-items: center; color: var(--ink); }
+#skener { width: 100%; border-radius: 10px; margin-bottom: 10px; }
+.kniha { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; padding: 10px 0; border-top: 1px solid var(--cara); }
+.kniha:first-child { border-top: 0; }
+.kniha img { width: 44px; height: 64px; object-fit: cover; border-radius: 4px; background: var(--akcent-svetla); }
+.kniha .bez-obalky { width: 44px; height: 64px; border-radius: 4px; background: var(--akcent-svetla); display: grid; place-items: center; font-size: 1.2rem; }
+.kniha h4 { margin: 0; font-size: 1rem; }
+.kniha .meta { color: var(--seda); font-size: .88rem; }
+.kniha .akce { display: flex; flex-direction: column; gap: 6px; }
+.odznak { display: inline-block; border-radius: 999px; padding: 1px 9px; font-size: .78rem; background: var(--akcent-svetla); }
+.odznak.presne { background: #e2efe2; color: var(--zelena); }
+.paticka { max-width: 860px; margin: 0 auto; padding: 0 16px 28px; color: var(--seda); font-size: .88rem; }
+.paticka a { color: inherit; }
+@media (max-width: 560px) { .kniha { grid-template-columns: 36px 1fr auto; } .kniha img, .kniha .bez-obalky { width: 36px; height: 52px; } }
