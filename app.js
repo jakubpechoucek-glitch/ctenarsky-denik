@@ -192,33 +192,46 @@
   // ---------- Dohledání podle ISBN ----------
   function cisteIsbn(v) { return v.replace(/[^0-9Xx]/g, "").toUpperCase(); }
 
+  // Volitelný API klíč ke Google Books (zdarma, v Google Cloud omezit na adresu
+  // aplikace). Bez klíče se používá sdílená kvóta, která bývá vyčerpaná (HTTP 429).
+  const GOOGLE_BOOKS_KEY = "";
+
+  // Vrací { nalez, chyby }: nalez je objekt nebo null, chyby popisují, co selhalo.
   async function dohledatIsbn(isbn) {
-    // Google Books
+    const chyby = [];
     try {
-      const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}`);
-      const j = await r.json();
-      const info = j.items?.[0]?.volumeInfo;
-      if (info) return {
-        nazev: info.title || "", autor: (info.authors || []).join(", "),
-        pocet_stran: info.pageCount || null,
-        rok_vydani: info.publishedDate ? Number(String(info.publishedDate).slice(0, 4)) || null : null,
-        obalka_url: info.imageLinks?.thumbnail?.replace("http://", "https://") || "",
-        jazyk: String(info.language || "").toLowerCase().startsWith("en") ? "en" : "cs",
-      };
-    } catch (e) { /* zkusí se druhý zdroj */ }
-    // Open Library
+      const klic = GOOGLE_BOOKS_KEY ? `&key=${encodeURIComponent(GOOGLE_BOOKS_KEY)}` : "";
+      const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}${klic}`);
+      if (!r.ok) chyby.push(r.status === 429 ? "Google Books: vyčerpaná kvóta (429)" : `Google Books: chyba ${r.status}`);
+      else {
+        const j = await r.json();
+        const info = j.items?.[0]?.volumeInfo;
+        if (info) return { nalez: {
+          nazev: info.title || "", autor: (info.authors || []).join(", "),
+          pocet_stran: info.pageCount || null,
+          rok_vydani: info.publishedDate ? Number(String(info.publishedDate).slice(0, 4)) || null : null,
+          obalka_url: info.imageLinks?.thumbnail?.replace("http://", "https://") || "",
+          jazyk: String(info.language || "").toLowerCase().startsWith("en") ? "en" : "cs",
+        }, chyby };
+        chyby.push("Google Books: kniha tam není");
+      }
+    } catch (e) { chyby.push("Google Books: nedostupné"); }
     try {
       const r = await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${encodeURIComponent(isbn)}&jscmd=data&format=json`);
-      const j = await r.json();
-      const info = j[`ISBN:${isbn}`];
-      if (info) return {
-        nazev: info.title || "", autor: (info.authors || []).map((a) => a.name).join(", "),
-        pocet_stran: info.number_of_pages || null,
-        rok_vydani: info.publish_date ? Number(String(info.publish_date).match(/\d{4}/)?.[0]) || null : null,
-        obalka_url: info.cover?.medium || "",
-      };
-    } catch (e) { /* nic */ }
-    return null;
+      if (!r.ok) chyby.push(`Open Library: chyba ${r.status}`);
+      else {
+        const j = await r.json();
+        const info = j[`ISBN:${isbn}`];
+        if (info) return { nalez: {
+          nazev: info.title || "", autor: (info.authors || []).map((a) => a.name).join(", "),
+          pocet_stran: info.number_of_pages || null,
+          rok_vydani: info.publish_date ? Number(String(info.publish_date).match(/\d{4}/)?.[0]) || null : null,
+          obalka_url: info.cover?.medium || "",
+        }, chyby };
+        chyby.push("Open Library: kniha tam není");
+      }
+    } catch (e) { chyby.push("Open Library: nedostupné"); }
+    return { nalez: null, chyby };
   }
 
   let skenStream = null;
@@ -263,8 +276,8 @@
       const isbn = cisteIsbn($("isbn").value);
       if (!isbn) { $("dohledani-stav").textContent = "Nejdřív zadej ISBN."; return; }
       $("dohledani-stav").textContent = "Hledám…";
-      const nalez = await dohledatIsbn(isbn);
-      if (!nalez) { $("dohledani-stav").textContent = "Knihu jsem podle ISBN nenašel – vyplň údaje ručně."; $("f-isbn").value = isbn; return; }
+      const { nalez, chyby } = await dohledatIsbn(isbn);
+      if (!nalez) { $("dohledani-stav").textContent = `Knihu jsem podle ISBN nenašel (${chyby.join("; ")}) – vyplň údaje ručně.`; $("f-isbn").value = isbn; return; }
       vyplnForm({ ...nalez, isbn, stav: "rozečtena", datum_zahajeni: dnes() });
       $("dohledani-stav").textContent = "Našel jsem – zkontroluj údaje a ulož.";
     });
