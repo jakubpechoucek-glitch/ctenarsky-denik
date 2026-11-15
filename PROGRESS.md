@@ -23,4 +23,8 @@
 - 15. 11. 2026 – GitHub Pages zapnuto, aplikace běží na
   https://jakubpechoucek-glitch.github.io/ctenarsky-denik/
   (nepřihlášeného přesměruje na Rozcestník a po přihlášení vrátí zpět).
-- Zbývá: Jakubovo první ostré otevření a kontrola, že data sedí.
+- 15. 11. 2026 – Úpravy dle Jakuba: základní údaje v Přehledu (dlaždice
+  i nejrychlejší/nejpomalejší kniha) se filtrují podle vybraného roku,
+  výběr roku přesunut nahoru do Přehledu; do hlavičky přidáno tlačítko
+  „← Rozcestník". Souhrny za jednotlivé roky zůstávají dole jako řádka
+  odznaků. Čeká se na Jakubovu ostrou kontrolu dat.

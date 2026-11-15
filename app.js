@@ -77,7 +77,15 @@
   }
 
   function renderPrehled() {
-    const s = S.souhrn(knihy);
+    const { roky, mesice } = S.prehledVCasu(knihy);
+    const rokyList = Object.keys(roky).sort().reverse();
+    const sel = $("graf-rok");
+    const zvoleny = rokyList.includes(sel.value) ? sel.value : rokyList[0];
+    sel.innerHTML = rokyList.map((r) => `<option ${r === zvoleny ? "selected" : ""}>${r}</option>`).join("");
+
+    // Základní údaje i extrémy se počítají jen z knih dočtených ve vybraném roce
+    const proRok = zvoleny ? knihy.filter((k) => k.datum_dokonceni && k.datum_dokonceni.startsWith(zvoleny)) : [];
+    const s = S.souhrn(proRok);
     const dlaz = [
       [s.knih, "dočtených knih"],
       [s.stran.toLocaleString("cs-CZ"), "stran celkem"],
@@ -86,16 +94,10 @@
     ];
     $("souhrn-dlazdice").innerHTML = dlaz.map(([v, t]) => `<div class="cislo"><b>${v}</b><span>${t}</span></div>`).join("");
 
-    const e = S.extremy(knihy);
+    const e = S.extremy(proRok);
     $("extremy").innerHTML = e.nejrychlejsi
       ? `Nejrychleji: <b>${esc(e.nejrychlejsi.nazev)}</b> (${S.rychlost(e.nejrychlejsi).toFixed(1).replace(".", ",")} stran/den) · Nejpomaleji: <b>${esc(e.nejpomalejsi.nazev)}</b> (${S.rychlost(e.nejpomalejsi).toFixed(1).replace(".", ",")} stran/den)`
-      : "Zatím žádná kniha s oběma daty a počtem stran.";
-
-    const { roky, mesice } = S.prehledVCasu(knihy);
-    const rokyList = Object.keys(roky).sort().reverse();
-    const sel = $("graf-rok");
-    const zvoleny = sel.value || rokyList[0];
-    sel.innerHTML = rokyList.map((r) => `<option ${r === zvoleny ? "selected" : ""}>${r}</option>`).join("");
+      : "V tomto roce zatím žádná kniha s oběma daty a počtem stran.";
     const max = Math.max(1, ...Object.entries(mesice).filter(([k]) => k.startsWith(zvoleny)).map(([, v]) => v.stran));
     const nazvyMesicu = ["leden", "únor", "březen", "duben", "květen", "červen", "červenec", "srpen", "září", "říjen", "listopad", "prosinec"];
     $("graf").innerHTML = nazvyMesicu.map((n, i) => {

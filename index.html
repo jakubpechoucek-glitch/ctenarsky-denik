@@ -12,6 +12,7 @@
   <h1>📚 Čtenářský deník</h1>
   <div class="uzivatel">
     <span id="jmeno-uzivatele"></span>
+    <a class="btn btn-maly btn-svetly" href="/rozcestnik/">← Rozcestník</a>
     <button id="odhlasit" class="btn btn-maly btn-svetly" hidden>Odhlásit</button>
   </div>
 </header>
@@ -19,12 +20,13 @@
 <main>
   <section id="prehled" class="karta">
     <h2>Přehled</h2>
+    <div class="radek-filtru">
+      <label>Rok: <select id="graf-rok"></select></label>
+      <span class="stav-text">Údaje i graf se počítají pro vybraný rok.</span>
+    </div>
     <div class="dlazdice" id="souhrn-dlazdice"></div>
     <div id="extremy" class="extremy"></div>
     <h3>Strany podle měsíců</h3>
-    <div class="radek-filtru">
-      <label>Rok: <select id="graf-rok"></select></label>
-    </div>
     <div id="graf" class="graf"></div>
     <div id="roky-souhrn" class="roky"></div>
   </section>
@@ -100,6 +102,6 @@
 <script src="/rozcestnik/vendor/supabase-js-2.45.4.js"></script>
 <script src="/rozcestnik/auth.js"></script>
 <script src="stats.js?v=20261115"></script>
-<script src="app.js?v=20261115"></script>
+<script src="app.js?v=20261115-2"></script>
 </body>
 </html>
