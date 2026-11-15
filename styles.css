@@ -58,3 +58,5 @@ form .checkbox { display: flex; gap: 8px; align-items: center; color: var(--ink)
 .paticka { max-width: 860px; margin: 0 auto; padding: 0 16px 28px; color: var(--seda); font-size: .88rem; }
 .paticka a { color: inherit; }
 @media (max-width: 560px) { .kniha { grid-template-columns: 36px 1fr auto; } .kniha img, .kniha .bez-obalky { width: 36px; height: 52px; } }
+
+.vlajka { height: .85em; width: auto; vertical-align: -1px; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0,0,0,.2); }

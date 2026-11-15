@@ -11,9 +11,10 @@
   const S = window.Statistiky;
 
   const DEMO_KNIHY = [
-    { id: "d1", nazev: "Ukázková detektivka", autor: "Jan Vzor", isbn: "9788000000001", pocet_stran: 320, rok_vydani: 2024, obalka_url: "", datum_zahajeni: "2026-10-20", datum_dokonceni: "2026-11-02", stav: "doctena", hodnoceni: 4, odhad: false, poznamka: "" },
+    { id: "d1", nazev: "Ukázková detektivka", autor: "Jan Vzor", isbn: "9788000000001", pocet_stran: 320, rok_vydani: 2024, jazyk: "cs", obalka_url: "", datum_zahajeni: "2026-10-20", datum_dokonceni: "2026-11-02", stav: "doctena", hodnoceni: 4, odhad: false, poznamka: "" },
     { id: "d2", nazev: "Dlouhý román o moři", autor: "Ema Příkladová", isbn: "", pocet_stran: 512, rok_vydani: 2022, obalka_url: "", datum_zahajeni: "2026-09-01", datum_dokonceni: "2026-10-15", stav: "doctena", hodnoceni: null, odhad: true, poznamka: "" },
     { id: "d3", nazev: "Krátké povídky", autor: "Jan Vzor", isbn: "", pocet_stran: 160, rok_vydani: 2025, obalka_url: "", datum_zahajeni: "2026-11-10", datum_dokonceni: null, stav: "rozečtena", hodnoceni: null, odhad: false, poznamka: "" },
+    { id: "d5", nazev: "An Example Novel in English", autor: "Jane Sample", isbn: "", pocet_stran: 360, rok_vydani: 2021, jazyk: "en", obalka_url: "", datum_zahajeni: "2026-10-01", datum_dokonceni: "2026-11-08", stav: "doctena", hodnoceni: 4, odhad: false, poznamka: "" },
     { id: "d4", nazev: "Naučná kniha o spánku", autor: "Petr Ukázka", isbn: "", pocet_stran: 280, rok_vydani: 2023, obalka_url: "", datum_zahajeni: null, datum_dokonceni: "2026-08-20", stav: "doctena", hodnoceni: 5, odhad: true, poznamka: "" },
   ];
 
@@ -60,6 +61,9 @@
     return r === null ? "" : ` · ${r.toFixed(1).replace(".", ",")} stran/den`;
   }
 
+  // Vlajka UK jako inline SVG (emoji vlajky se na Windows nezobrazují)
+  const VLAJKA_UK = `<svg class="vlajka" viewBox="0 0 60 30" role="img" aria-label="Anglicky (originál)"><title>Anglicky (originál)</title><clipPath id="vuk"><path d="M0 0h60v30H0z"/></clipPath><g clip-path="url(#vuk)"><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" stroke="#C8102E" stroke-width="3"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></g></svg>`;
+
   function knihaHtml(k, akce) {
     const obalka = k.obalka_url ? `<img src="${esc(k.obalka_url)}" alt="">` : `<div class="bez-obalky">📖</div>`;
     const obdobi = k.stav === "rozečtena"
@@ -71,7 +75,7 @@
     ].filter(Boolean).join(" · ");
     return `<div class="kniha" data-id="${esc(k.id)}">
       ${obalka}
-      <div><h4>${esc(k.nazev)}</h4><div class="meta">${esc(meta)}${esc(rychlostText(k))}</div>
+      <div><h4>${esc(k.nazev)}${k.jazyk === "en" ? ` ${VLAJKA_UK}` : ""}</h4><div class="meta">${esc(meta)}${esc(rychlostText(k))}</div>
       ${k.odhad ? `<span class="odznak">odhad dat</span>` : ""} ${k.poznamka ? `<div class="meta">${esc(k.poznamka)}</div>` : ""}</div>
       <div class="akce">${akce}</div></div>`;
   }
@@ -154,6 +158,7 @@
     $("f-rok").value = k.rok_vydani || "";
     $("f-isbn").value = k.isbn || "";
     $("f-obalka").value = k.obalka_url || "";
+    $("f-jazyk").value = k.jazyk || "cs";
     $("f-stav").value = k.stav || "rozečtena";
     $("f-zahajeni").value = k.datum_zahajeni || dnes();
     $("f-dokonceni").value = k.datum_dokonceni || "";
@@ -173,6 +178,7 @@
       rok_vydani: cislo("f-rok"),
       isbn: $("f-isbn").value.trim() || null,
       obalka_url: $("f-obalka").value.trim() || null,
+      jazyk: $("f-jazyk").value,
       stav: $("f-stav").value,
       datum_zahajeni: $("f-zahajeni").value || null,
       datum_dokonceni: $("f-dokonceni").value || null,
@@ -186,32 +192,46 @@
   // ---------- Dohledání podle ISBN ----------
   function cisteIsbn(v) { return v.replace(/[^0-9Xx]/g, "").toUpperCase(); }
 
+  // Volitelný API klíč ke Google Books (zdarma, v Google Cloud omezit na adresu
+  // aplikace). Bez klíče se používá sdílená kvóta, která bývá vyčerpaná (HTTP 429).
+  const GOOGLE_BOOKS_KEY = "";
+
+  // Vrací { nalez, chyby }: nalez je objekt nebo null, chyby popisují, co selhalo.
   async function dohledatIsbn(isbn) {
-    // Google Books
+    const chyby = [];
     try {
-      const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}`);
-      const j = await r.json();
-      const info = j.items?.[0]?.volumeInfo;
-      if (info) return {
-        nazev: info.title || "", autor: (info.authors || []).join(", "),
-        pocet_stran: info.pageCount || null,
-        rok_vydani: info.publishedDate ? Number(String(info.publishedDate).slice(0, 4)) || null : null,
-        obalka_url: info.imageLinks?.thumbnail?.replace("http://", "https://") || "",
-      };
-    } catch (e) { /* zkusí se druhý zdroj */ }
-    // Open Library
+      const klic = GOOGLE_BOOKS_KEY ? `&key=${encodeURIComponent(GOOGLE_BOOKS_KEY)}` : "";
+      const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}${klic}`);
+      if (!r.ok) chyby.push(r.status === 429 ? "Google Books: vyčerpaná kvóta (429)" : `Google Books: chyba ${r.status}`);
+      else {
+        const j = await r.json();
+        const info = j.items?.[0]?.volumeInfo;
+        if (info) return { nalez: {
+          nazev: info.title || "", autor: (info.authors || []).join(", "),
+          pocet_stran: info.pageCount || null,
+          rok_vydani: info.publishedDate ? Number(String(info.publishedDate).slice(0, 4)) || null : null,
+          obalka_url: info.imageLinks?.thumbnail?.replace("http://", "https://") || "",
+          jazyk: String(info.language || "").toLowerCase().startsWith("en") ? "en" : "cs",
+        }, chyby };
+        chyby.push("Google Books: kniha tam není");
+      }
+    } catch (e) { chyby.push("Google Books: nedostupné"); }
     try {
       const r = await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${encodeURIComponent(isbn)}&jscmd=data&format=json`);
-      const j = await r.json();
-      const info = j[`ISBN:${isbn}`];
-      if (info) return {
-        nazev: info.title || "", autor: (info.authors || []).map((a) => a.name).join(", "),
-        pocet_stran: info.number_of_pages || null,
-        rok_vydani: info.publish_date ? Number(String(info.publish_date).match(/\d{4}/)?.[0]) || null : null,
-        obalka_url: info.cover?.medium || "",
-      };
-    } catch (e) { /* nic */ }
-    return null;
+      if (!r.ok) chyby.push(`Open Library: chyba ${r.status}`);
+      else {
+        const j = await r.json();
+        const info = j[`ISBN:${isbn}`];
+        if (info) return { nalez: {
+          nazev: info.title || "", autor: (info.authors || []).map((a) => a.name).join(", "),
+          pocet_stran: info.number_of_pages || null,
+          rok_vydani: info.publish_date ? Number(String(info.publish_date).match(/\d{4}/)?.[0]) || null : null,
+          obalka_url: info.cover?.medium || "",
+        }, chyby };
+        chyby.push("Open Library: kniha tam není");
+      }
+    } catch (e) { chyby.push("Open Library: nedostupné"); }
+    return { nalez: null, chyby };
   }
 
   let skenStream = null;
@@ -256,8 +276,8 @@
       const isbn = cisteIsbn($("isbn").value);
       if (!isbn) { $("dohledani-stav").textContent = "Nejdřív zadej ISBN."; return; }
       $("dohledani-stav").textContent = "Hledám…";
-      const nalez = await dohledatIsbn(isbn);
-      if (!nalez) { $("dohledani-stav").textContent = "Knihu jsem podle ISBN nenašel – vyplň údaje ručně."; $("f-isbn").value = isbn; return; }
+      const { nalez, chyby } = await dohledatIsbn(isbn);
+      if (!nalez) { $("dohledani-stav").textContent = `Knihu jsem podle ISBN nenašel (${chyby.join("; ")}) – vyplň údaje ručně.`; $("f-isbn").value = isbn; return; }
       vyplnForm({ ...nalez, isbn, stav: "rozečtena", datum_zahajeni: dnes() });
       $("dohledani-stav").textContent = "Našel jsem – zkontroluj údaje a ulož.";
     });

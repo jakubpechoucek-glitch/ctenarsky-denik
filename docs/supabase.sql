@@ -39,3 +39,9 @@ create policy "cteni vlastni uprava" on public.cteni
   for update using (user_id = auth.uid()) with check (user_id = auth.uid());
 create policy "cteni vlastni mazani" on public.cteni
   for delete using (user_id = auth.uid());
+
+-- Jazyk knihy (přidáno později): cs = česky, en = anglický originál.
+-- Pro už existující tabulku spustit jednou v SQL Editoru.
+alter table public.cteni
+  add column if not exists jazyk text not null default 'cs'
+  check (jazyk in ('cs', 'en'));

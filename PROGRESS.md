@@ -32,3 +32,7 @@
   předchozímu roku (šipka, rozdíl a procenta; u dní na knihu je zlepšení
   pokles). Výpočet `porovnani()` je ve stats.js, testy rozšířeny
   (21 kontrol).
+- 15. 11. 2026 – Přidán jazyk knihy (`jazyk`: cs/en): ve formuláři výběr
+  „Česky / Anglicky (originál)", u anglických knih vlajka UK u názvu.
+  **Před nasazením spustit v Supabase SQL Editoru ALTER z `docs/supabase.sql`**
+  (sloupec `jazyk`, výchozí `cs`, stávající záznamy zůstanou české).
